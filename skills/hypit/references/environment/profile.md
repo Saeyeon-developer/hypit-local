@@ -90,6 +90,29 @@ rate-limit or service errors. An OAuth page follows the decision to connect the 
 
 ## Create a Profile when the project needs one
 
+### Analysis-only local Profile
+
+`analysis` and `analysis-prompt` do not use the starter Profile's `hypihub.default` entry. If
+speech timing is needed, create or select a Profile containing only local media preparation and the
+local WhisperX alignment Endpoint, then bind alignment explicitly:
+
+```json
+{
+  "endpoints": {
+    "media.local": { "use": "@hypit/provider-media-local" },
+    "whisperx.local": { "use": "@hypit/provider-whisperx-local" }
+  },
+  "bindings": {
+    "@hypit/whisperx@1#whisperx-alignment": "whisperx.local"
+  }
+}
+```
+
+Do not run `hypit auth`, initialize the hosted starter, or add generation/rendering Endpoints for
+these modes. If the task only needs visual inspection and prompt writing, use local media tools and
+do not open a Runtime Profile at all. The local Profile is a capability selector, not permission to
+create a Build or contact a hosted fallback.
+
 From the project directory:
 
 ```bash
@@ -101,7 +124,7 @@ hypit paths
 Profile and performs no installation or login. Use `hypit runtime use <profile>` to select an
 intentional existing Profile for this project.
 
-The official video Distribution's starter includes:
+The official video Distribution's starter includes (for explicit `production` work):
 
 - `hypihub.default` for remote generation and WhisperX alignment;
 - `media.local` for local media processing;

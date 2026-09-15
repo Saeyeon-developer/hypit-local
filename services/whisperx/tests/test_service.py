@@ -134,6 +134,7 @@ class EvidenceTests(unittest.TestCase):
     def test_language_auto_is_explicitly_normalized(self) -> None:
         self.assertIsNone(normalize_language("auto"))
         self.assertEqual(normalize_language("ZH"), "zh")
+        self.assertEqual(normalize_language(" KO "), "ko")
         with self.assertRaises(ValueError):
             normalize_language("en;rm -rf")
 
@@ -163,6 +164,20 @@ class ApplicationTests(unittest.TestCase):
             )
         self.assertEqual(response.status, 200)
         self.assertEqual(engine.seen, (32_000, "en"))
+
+    def test_transcribe_forwards_korean_without_rewriting_the_language(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / "evidence.wav"
+            write_wav(path, frames=32_000)
+            engine = FakeEngine()
+            application = WhisperXApplication(config(root), engine)
+            response = application.transcribe(
+                {"content-type": "application/json; charset=utf-8"},
+                json.dumps({"audio_path": str(path), "language": "ko"}).encode(),
+            )
+        self.assertEqual(response.status, 200)
+        self.assertEqual(engine.seen, (32_000, "ko"))
 
     def test_unknown_request_fields_are_reported(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

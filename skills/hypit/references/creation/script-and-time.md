@@ -116,7 +116,7 @@ side of Dual Text preserve their own lexical structure. This is why Cue breaks, 
 semantic markers attach to complete authored units instead of punctuation or visual line positions.
 Character-level timing does not call for character-sized Cues: use `||` for meaningful reading
 phrases. [Caption craft](../playbooks/craft/captions.md#language-changes-the-reading-unit) explains
-Chinese, English and mixed-script grouping, spacing and their fit in the picture.
+Korean, Chinese, English and mixed-script grouping, spacing and their fit in the picture.
 
 ## Write the intended pronunciation
 

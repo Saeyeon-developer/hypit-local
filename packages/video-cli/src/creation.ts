@@ -20,7 +20,7 @@ import { sealSpeechEvidenceAudio } from "@hypit/speech";
 import { speechEvidenceTypes } from "@hypit/speech-evidence";
 import type { AlignedTranscriptEvidence } from "@hypit/speech-evidence";
 import { sealText } from "@hypit/text";
-import { whisperXCapabilities, whisperXRequestForEvidenceAudio } from "@hypit/whisperx";
+import { isWhisperXLanguage, whisperXCapabilities, whisperXRequestForEvidenceAudio } from "@hypit/whisperx";
 import type { WhisperXLanguage } from "@hypit/whisperx";
 
 import { videoCliDistribution } from "./distribution.js";
@@ -278,8 +278,8 @@ async function transcribe(argv: readonly string[], io: CliIo, environment: Creat
   assert(parsed.positionals.length === 1, "transcribe takes exactly one audio or video file");
   const source = resolve(environment.cwd, parsed.positionals[0]!);
   const language = parsed.options.get("--language");
-  assert(language === "en" || language === "zh" || language === "es",
-    "transcribe requires --language en|zh|es for the spoken language (use --language zh for Chinese)");
+  assert(isWhisperXLanguage(language),
+    "transcribe requires --language en|zh|es|ko for the spoken language (use --language zh for Chinese or --language ko for Korean)");
   const to = await destination(parsed, environment.cwd);
   const { profile, host } = await environment.openHost(
     parsed.options.get("--runtime"),
@@ -432,7 +432,7 @@ export function writeCreationHelp(io: CliIo, topic?: CreationCommand): void {
       "hypit transcribe",
       "Establish word times with the whisperx-alignment Endpoint of the selected Runtime Profile.",
       "",
-      "  hypit transcribe <audio|video> --to <transcript.json> --language en|zh|es [--runtime <profile>] [--workspace <project>]",
+      "  hypit transcribe <audio|video> --to <transcript.json> --language en|zh|es|ko [--runtime <profile>] [--workspace <project>]",
       "",
       "Extracts 16 kHz mono speech audio with ffmpeg and writes every word with its start and end in",
       "seconds. One immediate request; no Build, Result or state.",
@@ -441,7 +441,7 @@ export function writeCreationHelp(io: CliIo, topic?: CreationCommand): void {
       "hypit measure",
       "Measure a script before writing a duration. Pure local work; no Runtime Profile, no request.",
       "",
-      "  hypit measure <source.svml> --segment <id> [--language auto|en|zh|ja|es] [--pace slow|normal|fast | --rate <units/s>]",
+      "  hypit measure <source.svml> --segment <id> [--language auto|en|zh|ja|es|ko] [--pace slow|normal|fast | --rate <units/s>]",
       "                [--rounding none|round|ceil] [--padding <s>]",
       "                [--workspace <project>]",
       "  hypit measure --text <text|file> [same options]",

@@ -23,6 +23,12 @@ adding units. This remains an approximation: connected English speech can reduce
 and Mandarin erhua can combine written characters into one syllable. An explicit `--language zh`
 keeps a Chinese passage with many English names under its intended delivery policy.
 
+Korean (`ko`) counts complete Hangul syllable blocks as approximate pronunciation units while
+keeping each spoken eojeol as the alignment/display unit. Embedded English is counted with the
+English syllable estimator. Korean is detected for `--language auto` when Hangul syllables are
+present; decomposed Jamo is normalized before detection and counting. Isolated Jamo, digits and
+punctuation do not receive invented timing.
+
 Measure the spoken wording. `--segment` reads the Script's pronunciation side of Dual Text;
 `--text` reads literal speech, so spell numbers and letter names as they will be said. A count
 cannot resolve an unspecified pronunciation.
@@ -31,6 +37,7 @@ cannot resolve an unspecified pronunciation.
 | --- | ---: | ---: | ---: | --- |
 | English (`en`) | 4.2 | 4.6 | 5.6 | syllables/s |
 | Mandarin Chinese (`zh`) | 4.2 | 5.25 | 6.5625 | approximate syllables/s |
+| Korean (`ko`) | 3.8 | 4.3 | 5.4 | approximate syllable blocks/s |
 
 These are authoring starting points for whole-passage delivery, including ordinary speech pauses.
 `normal` suits conversational explanation; `fast` gives brisk, tightly delivered copy less time.

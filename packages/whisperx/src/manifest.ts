@@ -5,6 +5,7 @@ import { speechEvidenceDependency, speechEvidenceTypes } from "@hypit/speech-evi
 import type { CapabilityRef, ModuleManifest, ProducerRef, TypeRef } from "@hypit/protocol";
 import { mediaPipelineManifest, mediaPipelineModuleRef } from "@hypit/media-pipeline";
 import { speechAlignmentManifest, speechAlignmentModuleRef } from "@hypit/speech-alignment";
+import { whisperXLanguages } from "./types.js";
 
 export const whisperXModuleRef = { name: "@hypit/whisperx", version: "1" } as const;
 export const whisperXTypes = {
@@ -38,8 +39,8 @@ export const whisperXMarkupSurfaces = [{
           accepts: [mediaTypes.synchronized],
           summary: "Selects the already normalized SynchronizedMedia represented by this Segment." },
         { name: "language", kind: "literal", required: false,
-          values: ["en", "zh", "es"],
-          summary: "For a Segment with Tokens, explicitly selects the English, Chinese or Spanish WhisperX models." },
+          values: whisperXLanguages,
+          summary: "For a Segment with Tokens, explicitly selects the English, Chinese, Spanish or Korean WhisperX models." },
       ],
       ports: [
         { name: "take", type: speechTypes.semanticTake,
@@ -50,7 +51,7 @@ export const whisperXMarkupSurfaces = [{
       notes: [
         "A Segment with Tokens states all five attributes and sends its prepared audio for alignment.",
         "An empty Segment omits language and maps its authored start/end Anchors directly to the prepared-media boundaries.",
-        "For speech, language is never detected from Script text or audio; each alignment call states en, zh or es explicitly.",
+        "For speech, language is never detected from Script text or audio; each alignment call states en, zh, es or ko explicitly.",
         "Importing this package is what selects the WhisperX model family; the Runtime separately binds the alignment Need to an Endpoint.",
       ],
     },

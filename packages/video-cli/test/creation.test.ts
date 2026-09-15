@@ -116,6 +116,14 @@ test("measure prints the seconds a line takes so the author can write the litera
     assert.match(chinese.text(), /^1\.667s/u);
     assert.match(chinese.text(), /7 pronunciation units · zh · 6 units\/s/u);
     assert.match(chinese.text(), /padding 0\.5s/u);
+
+    const korean = capture();
+    await runCreationCli(["measure", "--text", "안녕하세요 세계", "--language", "ko", "--rate", "4.3", "--rounding", "none", "--json"], korean.io, noHost);
+    const koreanView = JSON.parse(korean.text()) as { readonly units: number; readonly language: string; readonly rate: number };
+    assert.equal(koreanView.units, 7);
+    assert.equal(koreanView.language, "ko");
+    assert.equal(koreanView.rate, 4.3);
+
     await assert.rejects(runCreationCli(["measure", "--text", "Hello", "--pace", "fast", "--rate", "6"], capture().io, noHost), /either --pace or --rate/u);
 
     for (const [text, seconds] of [["Hello.", 2 / 4.6], [Array.from({ length: 460 }, () => "day").join(" "), 100]] as const) {
@@ -159,7 +167,32 @@ test("a Profile that does not serve the capability stops before anything is spen
 test("transcribe requires a spoken language before opening a host", async () => {
   const noHost: CreationEnvironment = { cwd: "/tmp", openHost: async () => { throw new Error("host must not open"); } };
   await assert.rejects(runCreationCli(["transcribe", "speech.wav", "--to", "speech.json"], capture().io, noHost),
-    /requires --language en\|zh\|es/u);
+    /requires --language en\|zh\|es\|ko/u);
+});
+
+test("Korean transcription explicitly sends ko", async () => {
+  const root = await mkdtemp(join(tmpdir(), "hypit-transcribe-ko-"));
+  try {
+    await writeFile(join(root, "speech.wav"), wav(32_000));
+    const selected = host([]);
+    const env: CreationEnvironment = { cwd: root, openHost: async () => ({ profile: join(root, "runtime.json"), host: {
+      ...selected,
+      invoke: async (need) => {
+        const request = need.constraints as unknown as WhisperXAlignmentRequest;
+        assert.equal(request.language, "ko");
+        return { value: { kind: "inline", value: canonicalize({ passages: interpretWhisperXTranscript({
+          segments: [{ words: [{ word: "안녕", start: 0.1, end: 0.6 }, { word: "세계", start: 0.8, end: 1.3 }] }],
+        }, request.sampleFrames) }) } };
+      },
+    } }) };
+    await runCreationCli(["transcribe", "speech.wav", "--language", "ko", "--to", "speech.json"], capture().io, env);
+    const result = JSON.parse(await readFile(join(root, "speech.json"), "utf8"));
+    assert.equal(result.language, "ko");
+    assert.deepEqual(result.passages[0].words, [
+      { text: "안녕", start_seconds: 0.1, end_seconds: 0.6 },
+      { text: "세계", start_seconds: 0.8, end_seconds: 1.3 },
+    ]);
+  } finally { await rm(root, { recursive: true, force: true }); }
 });
 
 test("Chinese transcription explicitly sends zh and retains individual character windows", async () => {

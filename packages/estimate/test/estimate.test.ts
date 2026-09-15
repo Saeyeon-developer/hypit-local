@@ -142,3 +142,14 @@ test("Chinese mixed-language punctuation preserves English word boundaries", () 
     language: "zh", rate: 5, rounding: "none", paddingSec: 0.5,
   }), 2.5);
 });
+
+test("Korean estimates count complete Hangul syllable blocks and detect NFC-decomposed text", () => {
+  assert.equal(detectSpeechEstimateLanguage("안녕하세요, 세계!"), "ko");
+  assert.equal(detectSpeechEstimateLanguage("안녕하세요".normalize("NFD")), "ko");
+  assert.equal(countSpeechEstimateUnits("안녕하세요, 세계!", "ko"), 7);
+  assert.equal(countSpeechEstimateUnits("안녕 video", "ko"), 5);
+  const duration = estimateSpeechDuration(sealText("안녕하세요"), {
+    language: "ko", pace: "normal", rounding: "none",
+  });
+  assert.equal(duration, 5 / 4.3);
+});

@@ -1,6 +1,6 @@
 ---
 name: hypit
-description: Make, adapt, and revise videos with Hypit from references or briefs, including SVML/SVS/SVRun authoring, project components, and Runtime or credential setup.
+description: Analyze, direct and revise videos with Hypit from references or briefs, including Korean/English/Chinese speech analysis, prompt-pack authoring, SVML/SVS/SVRun production and optional Runtime setup.
 ---
 
 # Hypit
@@ -18,6 +18,33 @@ Take responsibility for creative and technical execution. Bring the user into me
 about their goal, private facts, connecting services, substantial machine preparation and spending.
 Carry their settled choices into the work and project notes. Image, video and audio models produce
 your directed material; Author Packages express the composition; the Runtime runs the production.
+
+## Choose the execution mode before setup
+
+Route the request before opening a Runtime Profile or preparing any hosted service. Analysis and
+prompt work are first-class local deliverables; they do not implicitly become a production Build.
+
+- **`analysis` (default for “analyze/review/deconstruct this video”):** inspect the supplied media,
+  transcribe when speech is present, and write evidence-backed `ANALYSIS.md` and `TIMELINE.md`.
+- **`analysis-prompt` (default for “analyze and create prompts / treatment / brief”):** do all of
+  `analysis`, then write `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and a validated `prompt-pack.json`.
+- **`production` (only when the user explicitly asks to generate, build, render, export or deliver
+  a video):** continue into SVML/SVS/SVRun authoring, chosen generation Providers, Runtime planning,
+  Build/Run execution and review.
+
+For `analysis` and `analysis-prompt`, stay local and stateless: use media inspection and the local
+WhisperX service when speech timing is needed. Do not run `hypit auth` or `hypit runtime up` against
+the hosted starter; a local Profile may be prepared with `hypit programs up --endpoint
+whisperx.local`. Do not run `hypit plan`, `hypit build`, `hypit status`, `hypit get`, Studio,
+rendering or export. Do not call
+HypiHub, use a generation Model/Provider, create generation Needs/SVML/Recipes/Runs, or silently
+fall back to a hosted endpoint. A Runtime Profile is only permitted to select local media and
+`@hypit/provider-whisperx-local`; if speech is not needed, do not open a Profile at all. The output
+is analysis and/or prompts for the user's own generation provider, not generated video.
+
+When the user explicitly selects `production`, confirm the chosen execution services and continue
+through the production guidance below. Never infer production from a request that only asks for
+analysis, a treatment or prompts.
 
 Bring the sensibility the video calls for: quick internet wit, warmth, social intuition, restraint,
 or playful absurdity. Let it shape your ideas, images, words, and performances. Through every style,
@@ -103,15 +130,18 @@ reference, WhisperX's transcript and word times connect speech with picture chan
 preparing a new local inference service, explain its remaining setup effort alongside hosted
 WhisperX; available weights can reduce that effort without deciding the user's service choice. Use
 [environment selection](references/environment/profile.md#choose-the-practical-capability-path-with-the-user)
-to recommend a practical route, including HypiHub's integrated hosted transcription and generation.
-Carry working, chosen services forward. Prepare the chosen path and reconsider it when actual
+to recommend a practical route. For `production`, this may include a user-selected hosted or local
+transcription/generation service. For `analysis` and `analysis-prompt`, use the local-only path above
+and do not initialize the starter HypiHub Profile. Carry working, chosen services forward. Prepare
+the chosen path and reconsider it when actual
 progress changes its usefulness. A Profile-wide readiness report describes configuration; the
 current production determines which findings matter next.
 
-As the material plan becomes concrete, connect the required generation capabilities through the
-user's chosen accounts. [Models and Providers](references/environment/model-and-provider.md)
-explains BYOK and project-owned extensions. Official local and HypiHub Providers are starting
-implementations; new services can be connected through the same public package interfaces.
+As the material plan becomes concrete in `production`, connect the required generation capabilities
+through the user's chosen accounts. [Models and Providers](references/environment/model-and-provider.md)
+explains BYOK and project-owned extensions. In `production`, official local and HypiHub Providers
+are starting implementations; new services can be connected through the same public package
+interfaces. Analysis modes do not connect any generation Provider.
 Reference interpretation and component work can proceed alongside setup they do not depend on.
 
 ## Understand and adapt
@@ -145,7 +175,7 @@ performance prompts, Script pronunciation, voice references and visual reference
 Resolve these creative choices while authoring the requests. Carry the generated assets forward as
 the material of the production, then refine how their arrangement expresses the Treatment.
 
-## Compose and refine
+## Compose and refine (`production` only)
 
 When the Script, prompts, references and requested durations are ready, submit the material work
 within the agreed commission. Develop components, Recipes and semantic arrangement while generation
@@ -212,13 +242,19 @@ practical, revisit that choice and carry the improvement into the work and its n
 - **Project ownership.** Preserve unrelated Source, Recipe, Run, assets, and project-package work.
   Make production changes at their owning source; keep Result media intact. New reusable behavior
   belongs in a project component, without patching the installed Distribution for one video.
-- **Done means watched.** Watch the actual deliverable and judge it against the Brief, Treatment,
+- **Done means watched (production).** Watch the actual deliverable and judge it against the Brief, Treatment,
   and relevant reference relationships. Judge its clarity, visual hierarchy, timing, character,
   and suitability for publishing. Browser review can settle the composition before export; when
   delivering an encoded video, inspect that file too. Explain the important choices and limitations.
   Alongside the finished video, show the editable production in
   [Studio](references/production/studio.md#show-the-finished-work) when it is readily accessible
   to the user, so they can see how the piece is arranged and what they can change.
+
+For `analysis`, completion means the supplied media has been inspected, speech evidence is preserved
+with its confidence/unknowns, and `ANALYSIS.md` plus `TIMELINE.md` are complete. For
+`analysis-prompt`, completion additionally means `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and
+`prompt-pack.json` agree on source ranges, aspect ratio, language and prompt IDs. These modes do not
+produce or export a video.
 
 ## Where the current question is answered
 
@@ -240,7 +276,8 @@ practical, revisit that choice and carry the improvement into the work and its n
 | directing generated video, visible performance, silent action, camera behavior, cuts or request duration | `references/playbooks/craft/video-direction.md` |
 | deciding who is A-roll, recurring voice identity, covered performance or independent narration | `references/playbooks/craft/voice-and-performance.md` |
 | designing B-roll coverage, montage, short display windows or editorial handoffs | `references/playbooks/craft/b-roll.md` |
-| grouping Chinese, English or mixed-script Caption, reading rhythm, styling or placement | `references/playbooks/craft/captions.md` |
+| grouping Korean, Chinese, English or mixed-script Caption, reading rhythm, styling or placement | `references/playbooks/craft/captions.md` |
+| analyzing a reference locally or handing off provider-neutral prompts without generation | `references/creation/analysis-and-prompts.md` |
 | applying Caption Styles by speaker or passage, overriding a treatment, or hiding selected captions | `references/production/caption-presentation.md` |
 | designing MG, a board, cards, graphic state, hierarchy, palette or reveals | `references/playbooks/craft/graphic-compositions.md` |
 | deciding which generated images or videos should depend on which references | `references/playbooks/craft/generated-dependencies.md` |

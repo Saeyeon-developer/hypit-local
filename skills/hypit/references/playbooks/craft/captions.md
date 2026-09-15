@@ -12,7 +12,7 @@ Independent titles, lower thirds, labels and editorial paraphrases belong to the
 For implementation of a new visual family, read
 [Caption authoring](../../production/caption-authoring.md). That guide keeps the common text/timing
 chain and shows where the new family owns scheduling and rendering.
-For choosing Chinese, Latin or mixed-script faces, using a local font or finding a new one, read
+For choosing Korean, Chinese, Latin or mixed-script faces, using a local font or finding a new one, read
 [Fonts and text](../../production/fonts-and-text.md).
 
 ## Direct captions for this video
@@ -114,16 +114,20 @@ or quantity and unit together when separating them would make either screen stat
 ### Language changes the reading unit
 
 English commonly uses a word as its smallest timed display unit; Chinese uses individual Han
-characters. That gives Chinese precise character highlighting, while a Cue still holds a meaningful
-phrase. A Chinese Cue can comfortably contain more characters than an English Cue contains words.
-Choose its length from meaning, reading time and the space the actual font occupies. A fixed word
-or character count cannot make that choice. Count the display side of Dual Text when judging fit.
+characters; Korean uses one eojeol (space-delimited lexical word). That gives Chinese precise
+character highlighting while Korean preserves natural word timing, and a Cue still holds a
+meaningful phrase. A Chinese Cue can comfortably contain more characters than an English Cue
+contains words. Choose its length from meaning, reading time and the space the actual font occupies.
+A fixed word or character count cannot make that choice. Count the display side of Dual Text when
+judging fit. Never manufacture per-syllable Korean times from a word-level WhisperX response.
 
 | Writing | Grouping and presentation |
 | --- | --- |
 | English | Keep a useful phrase together, including its articles, negation and name or quantity. Word lengths vary, so the chosen face and width matter more than a word count. |
 | Chinese | Keep compounds, names, modifiers and their objects together. Let a complete short clause share a Cue when it fits; repeated tiny character groups fragment both meaning and the screen. |
 | Mixed Chinese and English | Read the phrase as a whole. A Latin brand name or number can occupy several Han characters' width; its lexical unit count does not predict that width. |
+| Korean | Keep each eojeol intact and group short clauses, particles and their surrounding phrase by meaning. Use word-level Korean timing for karaoke; do not split a word into Hangul syllables. |
+| Mixed Korean and Latin | Preserve Korean eojeol and Latin names as separate lexical units, then judge width with the actual Korean fallback face and the intended reading pace. |
 
 Fine already leaves adjacent Han characters together without English word gaps. Its `word-gap`
 controls spaced boundaries, including Chinese/Latin transitions; `letter-spacing` adjusts tracking.
@@ -178,9 +182,10 @@ justify a different handoff. The sentence supplies semantic structure; the prese
 much of that structure should share one screen state.
 
 Fine's optional `max-words-per-line` inserts visual line breaks by display-unit count. In Chinese,
-that count is usually characters. Leave it unset for ordinary width-based flow; choose it when a
-deliberate counted row serves the design. `max-lines` checks those counted rows and requires that
-setting; it does not make a long Cue fit one physical line. The package README owns these controls.
+that count is usually characters; in Korean, it counts eojeol. Leave it unset for ordinary
+width-based flow; choose it when a deliberate counted row serves the design. `max-lines` checks
+those counted rows and requires that setting; it does not make a long Cue fit one physical line. The
+package README owns these controls.
 
 Use Studio or a rendered interval to see the Cue with actual speech. Repeatedly flashing tiny groups
 usually means the viewer is being asked to reacquire text too often; an overfull block usually means

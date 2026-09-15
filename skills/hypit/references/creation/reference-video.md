@@ -74,8 +74,11 @@ surrounding argument, visible names and supplied context. Small transcription er
 with a clear understanding of what the passage means.
 
 Pass the reference's spoken language explicitly: `--language zh` for Chinese, `en` for English,
-or `es` for Spanish. A Chinese passage can contain English brands and names while still using `zh`.
-Its timed Chinese characters help locate a phrase precisely; group those characters into meaningful
+`es` for Spanish, or `ko` for Korean. A Chinese passage can contain English brands and names while
+still using `zh`. A Korean passage remains eojeol/word-timed; do not split Hangul syllables or
+invent syllable-level times when writing the analysis. Its Korean word windows can locate an eojeol
+or phrase without further splitting it.
+For Chinese, timed characters help locate a phrase precisely; group those characters into meaningful
 phrases when describing the reference and writing the new Script.
 
 [Environment selection](../environment/profile.md#choose-the-practical-capability-path-with-the-user)
@@ -117,6 +120,10 @@ exits. A few representative stills cannot supply that temporal account.
 ```bash
 hypit transcribe references/ad/source.mp4 \
   --language en --to references/ad/transcript.json
+
+# Korean reference: word windows are Korean eojeol, not individual syllables.
+hypit transcribe references/ad/source.mp4 \
+  --language ko --to references/ad/transcript.json
 
 hypit media tile references/ad/source.mp4 --start 0 --end 12 --every 1 \
   --transcript references/ad/transcript.json \

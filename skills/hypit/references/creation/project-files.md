@@ -97,6 +97,8 @@ project/
 │   └── <target>/
 │       ├── BRIEF.md
 │       ├── TREATMENT.md
+│       ├── PROMPTS.md
+│       ├── prompt-pack.json
 │       ├── PROGRESS.md
 │       ├── authors/
 │       ├── recipes/
@@ -144,6 +146,13 @@ referenced in place; its documentary role does not require a duplicate.
   [agreed paid scope](brief.md#brief-preserves-user-authority).
 - `TREATMENT.md` is the director's current answer to the Brief: the intended new piece in complete
   creative terms, before implementation details.
+- `PROMPTS.md` is the readable provider-neutral prompt handoff: one prompt per source range, with
+  purpose, continuity notes, language and negative guidance. It does not execute a generation
+  Provider.
+- `prompt-pack.json` is the machine-readable equivalent validated by
+  [`prompt-pack.schema.json`](../../assets/prompt-pack.schema.json). It contains source ranges and
+  prompt wording only; credentials, endpoints, provider names, receipts and pricing never belong in
+  the pack.
 - `authors/`, `recipes/`, and `runs/` are the exact production implementation.
 - `PROGRESS.md` is a short photograph of the work now: the live question, what remains to examine or
   make, next useful action, real blockers, active Build ids and reusable Results. Keep cost information

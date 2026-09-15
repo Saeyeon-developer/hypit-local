@@ -11,6 +11,7 @@ import { fixtureResource } from "../../../test/fixture-resource.js";
 
 import {
   decodeWhisperXSemanticTakeSurface,
+  verifyWhisperXAlignmentRequest,
   whisperXRequestForEvidenceAudio,
 } from "@hypit/whisperx";
 
@@ -33,6 +34,12 @@ test("WhisperX receives normalized bytes without authored Segment truth", () => 
   assert.equal("segments" in request, false);
   assert.equal(request.sampleFrames, 16_000);
   assert.equal(request.language, "es");
+});
+
+test("WhisperX accepts Korean as a first-class alignment language", () => {
+  const request = whisperXRequestForEvidenceAudio(evidenceAudio(), { language: "ko" });
+  assert.equal(request.language, "ko");
+  assert.deepEqual(verifyWhisperXAlignmentRequest(request), request);
 });
 
 test("the real-media Surface materializes an empty Segment from its media domain", async () => {

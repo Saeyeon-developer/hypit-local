@@ -20,6 +20,9 @@ const PACE_RATE: Readonly<Record<
   zh: { slow: 4.2, normal: 5.25, fast: 6.5625 },
   ja: { slow: 6, normal: 7.5, fast: 9.375 },
   es: { slow: 4.72, normal: 5.9, fast: 7.375 },
+  // Korean counts complete Hangul syllable blocks, with English loanwords
+  // measured by the existing English syllable counter.
+  ko: { slow: 3.8, normal: 4.3, fast: 5.4 },
 };
 
 function words(text: string): string[] {
@@ -35,9 +38,12 @@ function looksSpanish(text: string): boolean {
 }
 
 export function detectSpeechEstimateLanguage(text: string): ResolvedSpeechEstimateLanguage {
-  const han = (text.match(/\p{Script=Han}/gu) ?? []).length;
-  const kana = (text.match(/[\u3040-\u30ff]/gu) ?? []).length;
+  const normalized = text.normalize("NFC");
+  const hangul = (normalized.match(/[\uac00-\ud7a3]/gu) ?? []).length;
+  const han = (normalized.match(/\p{Script=Han}/gu) ?? []).length;
+  const kana = (normalized.match(/[\u3040-\u30ff]/gu) ?? []).length;
   const ascii = (text.match(/[A-Za-z]/gu) ?? []).length;
+  if (hangul > 0) return "ko";
   if (kana > Math.max(han, ascii / 4)) return "ja";
   if (han > ascii / 4) return "zh";
   if (looksSpanish(text)) return "es";
@@ -112,6 +118,14 @@ function spanishSyllables(word: string): number {
   return Math.max(1, runs.reduce((sum, run) => sum + spanishVowelNuclei(run), 0));
 }
 
+function koreanSyllableUnits(text: string): number {
+  const normalized = text.normalize("NFC");
+  const syllables = normalized.match(/[\uac00-\ud7a3]/gu)?.length ?? 0;
+  const latin = words(normalized.replace(/[\uac00-\ud7a3]/gu, " "))
+    .filter((word) => /[A-Za-z]/u.test(word));
+  return syllables + latin.reduce((sum, word) => sum + englishSyllables(word), 0);
+}
+
 export function countSpeechEstimateUnits(
   text: string,
   language: ResolvedSpeechEstimateLanguage,
@@ -123,6 +137,7 @@ export function countSpeechEstimateUnits(
       .filter((word) => /[A-Za-z]/u.test(word));
     return cjk + latin.reduce((sum, word) => sum + englishSyllables(word), 0);
   }
+  if (language === "ko") return koreanSyllableUnits(text);
   if (language === "es") return words(text).reduce((sum, word) => sum + spanishSyllables(word), 0);
   return words(text).reduce((sum, word) => sum + englishSyllables(word), 0);
 }
@@ -137,7 +152,7 @@ export function assertSpeechEstimatePolicy(value: SpeechEstimatePolicy): void {
   const hasPace = value.pace !== undefined;
   const hasRate = value.rate !== undefined;
   if (
-    !(["auto", "en", "zh", "ja", "es"] as const).includes(value.language)
+    !(["auto", "en", "zh", "ja", "es", "ko"] as const).includes(value.language)
     || hasPace === hasRate
     || (hasPace && !(["slow", "normal", "fast"] as const).includes(value.pace))
     || (hasRate && (!Number.isFinite(value.rate) || value.rate <= 0))

@@ -3,6 +3,12 @@
 Read this when assessing local preparation, selecting local WhisperX, or preparing and repairing a
 local Endpoint's executable or Managed Program.
 
+For `analysis` and `analysis-prompt`, this page is the only Runtime preparation path that may be
+needed. Keep the work local and stateless: media inspection can use `media.local`, speech timing can
+use `whisperx.local`, and no HypiHub credential, hosted fallback, generation Provider, Build or
+rendering service is allowed. If the local service is not ready, report the preparation blocker
+instead of silently switching to a hosted Endpoint.
+
 ## Assess local preparation
 
 Use `hypit paths` to locate the selected Profile and machine state. Inspect relevant service

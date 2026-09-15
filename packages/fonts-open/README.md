@@ -45,6 +45,10 @@ weight-400 monochrome Noto Emoji face. Emoji stays explicit—omitting `emoji` a
 `Fallback` children can select Arabic, Hebrew, Devanagari, Thai, Japanese, Korean or any other
 catalog family with their own honest weight/style.
 
+Korean captions can use the bundled `noto-sans-kr` or `noto-serif-kr` families as an explicit face or
+fallback. Font choice is independent of WhisperX language selection; the caption layout consumes the
+authored Korean eojeol units and does not select a font implicitly.
+
 The package does not rewrite author text to force presentation. For characters that have both text
 and Emoji forms, write the real Unicode Emoji sequence (normally the character followed by VS16,
 for example `☎️`) when color presentation is intended. Ordinary pictographic Emoji such as `🌐`

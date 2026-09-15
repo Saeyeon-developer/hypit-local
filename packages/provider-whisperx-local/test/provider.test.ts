@@ -92,10 +92,11 @@ test("local Provider stages canonical evidence bytes unchanged and returns seale
     assert.ok(url.endsWith("/transcribe"));
     const requestBody = init?.body;
     if (typeof requestBody !== "string") throw new Error("WhisperX request body is not JSON text");
-    const body = JSON.parse(requestBody) as { readonly audio_path: string };
+    const body = JSON.parse(requestBody) as { readonly audio_path: string; readonly language: string };
+    assert.equal(body.language, "ko");
     stagedMatches = Buffer.compare(Buffer.from(await readFile(body.audio_path)), Buffer.from(expected)) === 0;
     return new Response(JSON.stringify({
-      language: "en",
+      language: "ko",
       segments: [{ start: 0, end: 2, words: [
         { text: "hello", start: 0.1, end: 0.4 },
         { text: "world", start: 1.2, end: 1.6 },
@@ -109,7 +110,7 @@ test("local Provider stages canonical evidence bytes unchanged and returns seale
       artifact,
       sampleFrames: 32_000,
     });
-    const constraints = whisperXRequestForEvidenceAudio(evidenceAudio, { language: "en" });
+    const constraints = whisperXRequestForEvidenceAudio(evidenceAudio, { language: "ko" });
     const need: Need = {
       id: "need:whisperx-loopback",
       capability: whisperXCapabilities.alignment,

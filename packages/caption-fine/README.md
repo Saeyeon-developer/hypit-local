@@ -82,9 +82,11 @@ caption.primary {
 
 ## Language, spacing and line layout
 
-The same Caption pipeline serves English and Chinese. Script emits English lexical words and
-individual Han characters as Display Words; punctuation stays with its display word. Fine uses
-those units for timing and active Paint, while authored Cues remain complete reading phrases.
+The same Caption pipeline serves English, Chinese and Korean. Script emits English lexical words,
+individual Han characters as Display Words, and Korean eojeol (space-delimited lexical words) as
+Display Words; punctuation stays with its display word. Fine uses those units for timing and active
+Paint, while authored Cues remain complete reading phrases. Korean is never split into individual
+Hangul syllables for timing or karaoke.
 Dual Text retains its complete alignment unit even when it displays or speaks several words.
 
 `<组件化|>` authors the same unit as `<组件化|组件化>` without repeating the speech. Fine's `step`
@@ -95,21 +97,22 @@ The underlying character anchors remain available to other Timeline consumers. `
 `typewriter` still animate inside the complete unit over its interval when deliberately selected.
 
 `word-gap` applies between Latin words and at Chinese/Latin boundaries. Adjacent Han characters and
-full-width punctuation carry no extra word gap. `letter-spacing` controls glyph tracking. Exact
-font fallbacks supply the required glyphs; the layout does not select a font by language.
+full-width punctuation carry no extra word gap; Korean eojeol preserve their authored boundaries.
+`letter-spacing` controls glyph tracking. Exact font fallbacks supply the required glyphs; the layout
+does not select a font by language.
 
 | Control | Behavior |
 | --- | --- |
 | `width`, `size`, `padding`, `letter-spacing`, `word-gap` | Determine the available space and the text's occupied width. |
 | `wrap: word` | Flows at display-unit boundaries and permits an over-wide word to break. Han units are already characters. |
 | `wrap: grapheme` | Also permits breaking inside a Latin word. |
-| `max-words-per-line` | Optional counted row breaks between complete alignment units. Counts Display Words, normally characters for Chinese; it does not make new Cues. An indivisible Dual Text unit can exceed this count. |
+| `max-words-per-line` | Optional counted row breaks between complete alignment units. Counts Display Words, normally characters for Chinese and eojeol for Korean; it does not make new Cues. An indivisible Dual Text unit can exceed this count. |
 | `max-lines` | Requires `max-words-per-line`; rejects too many counted rows. It does not measure browser wrapping or guarantee one physical line. |
 
 Both count limits are omitted above so the example flows by available width. For a compact
 single-line treatment, author coherent Cues and choose a font, size and width that fit those Cues.
 `karaoke: off` keeps a complete Cue steady; `current` and `trail` follow its timed units, which are
-normally individual characters in Chinese.
+normally individual characters in Chinese and eojeol in Korean.
 
 | Effect | Recipe | Visible behavior |
 | --- | --- | --- |
@@ -119,7 +122,7 @@ normally individual characters in Chinese.
 | Spoken-unit appearance | `atom-reveal: on-start` | Each complete unit appears at its start. |
 | Typing appearance | `atom-reveal: typewriter` | Whole graphemes appear in sequence within each unit, starting with its first grapheme at the unit's start. A normal Han unit appears as a complete character. |
 
-`step` is the default Karaoke transition. Choose it for ordinary Chinese character highlighting;
+`step` is the default Karaoke transition. Choose it for ordinary Chinese character or Korean eojeol highlighting;
 `wipe` deliberately produces partial glyph fills. Cue width and duration do not supply a substitute
 clock for either mode. `atom-reveal` controls text appearing, independently of Karaoke recoloring
 already visible text. A Dual Text span shares one timing unit, so its display words activate together

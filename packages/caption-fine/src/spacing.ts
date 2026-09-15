@@ -2,9 +2,9 @@
  * Where a word gap belongs between two adjacent display surfaces.
  *
  * A Display Word is one lexical unit, and in Han, Hiragana and Katakana that unit is a single
- * character. A gap applied to every boundary therefore sets Chinese and Japanese as though every
- * character were a word, so each boundary decides its own gap from the two characters that meet
- * across it.
+ * character. Korean remains word/eojeol based. A gap applied to every boundary therefore sets
+ * Chinese and Japanese as though every character were a word, so each boundary decides its own
+ * gap from the two characters that meet across it.
  *
  * The classes follow pangu.js: a CJK character beside a half-width letter, digit, bracket or
  * operator takes one space. The gap pangu inserts is an ordinary space, so a boundary either

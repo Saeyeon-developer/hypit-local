@@ -1,4 +1,4 @@
-export type SpeechEstimateLanguage = "auto" | "en" | "zh" | "ja" | "es";
+export type SpeechEstimateLanguage = "auto" | "en" | "zh" | "ja" | "es" | "ko";
 export type ResolvedSpeechEstimateLanguage = Exclude<SpeechEstimateLanguage, "auto">;
 export type SpeechEstimatePace = "slow" | "normal" | "fast";
 export type SpeechEstimateRounding = "none" | "round" | "ceil";

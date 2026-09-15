@@ -116,6 +116,14 @@ test("Caption punctuation is display-only and CJK uses lexical character units",
   assert.deepEqual(document.words.slice(-4).map((word) => word.text), ["你", "好，", "世", "界！"]);
 });
 
+test("Korean Caption keeps each eojeol as one alignment and display unit", () => {
+  const parsed = parseScript("punctuation-korean.svml", "<line>안녕하세요 세계!</line>");
+  const document = captionDocument(parsed, "story.caption", "story");
+  assert.deepEqual(parsed.tokens.map((token) => token.text), ["안녕하세요", "세계"]);
+  assert.deepEqual(document.words.map((word) => word.text), ["안녕하세요", "세계!"]);
+  assert.deepEqual(document.units.map((unit) => unit.wordIds.length), [1, 1]);
+});
+
 test("Caption punctuation assigns ASCII quotes to the enclosed display words", () => {
   const parsed = parseScript(
     "punctuation-quotes.svml",

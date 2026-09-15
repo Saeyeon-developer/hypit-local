@@ -13,6 +13,7 @@ import { mediaTypes } from "@hypit/media";
 
 import { whisperXBoundarySemanticTakeFragment, whisperXSemanticTakeFragment } from "./fragment.js";
 import { whisperXTypes } from "./manifest.js";
+import { isWhisperXLanguage } from "./types.js";
 import type { WhisperXLanguage } from "./types.js";
 
 function reference(
@@ -62,8 +63,8 @@ export const decodeWhisperXSemanticTakeSurface: StructuredSurfaceHandler = ({ el
     };
   }
   const language = stringAttribute(element, "language");
-  if (language !== "en" && language !== "zh" && language !== "es") {
-    throw new Error(`${element.name}.language must be en, zh, or es`);
+  if (!isWhisperXLanguage(language)) {
+    throw new Error(`${element.name}.language must be en, zh, es, or ko`);
   }
   const languageId = `${id}.language`;
   return {

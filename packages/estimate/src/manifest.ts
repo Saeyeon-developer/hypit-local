@@ -15,7 +15,7 @@ const number = { kind: "number" } as const satisfies ValueSchema;
 export const speechEstimatePolicySchema: ValueSchema = {
   kind: "object",
   fields: {
-    language: { schema: { kind: "string", enum: ["auto", "en", "zh", "ja", "es"] } },
+    language: { schema: { kind: "string", enum: ["auto", "en", "zh", "ja", "es", "ko"] } },
     pace: { schema: { kind: "string", enum: ["slow", "normal", "fast"] }, optional: true },
     rate: { schema: { kind: "number", minimum: 0.000001 }, optional: true },
     rounding: { schema: { kind: "string", enum: ["none", "round", "ceil"] } },

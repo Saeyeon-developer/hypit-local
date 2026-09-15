@@ -2,7 +2,7 @@
 
 Read this when choosing or finding fonts, using a local font file, handling multiple writing systems
 or Emoji, or placing titles and labels. [Caption](../playbooks/craft/captions.md) covers text displayed
-with speech and the reading rhythm of Chinese and English Cues.
+with speech and the reading rhythm of Korean, Chinese and English Cues.
 
 The font's glyph shapes and spacing determine how text wraps and how much room it needs. A font
 resource supplies those glyphs, a Style supplies their size and treatment, and a text item supplies
@@ -35,6 +35,11 @@ Fallback order also directs the design. Inter first with Noto Sans SC after it g
 Inter's shapes and Chinese Noto's. A Chinese face first can supply both scripts for a more unified
 line. Similar numeric weights in different families can look different, so judge the pairing in the
 same Cue. The renderer uses the exact supplied faces and disables synthetic bold and italic.
+
+For Korean-led speech, use an explicit Korean face or fallback such as `noto-sans-kr` or
+`noto-serif-kr` from `@hypit/fonts-open`. Keep the Korean face in the stack even when Latin words
+also appear. Font selection does not alter WhisperX language or timing: Korean captions remain
+eojeol-based, and no renderer-level syllable splitting is introduced.
 
 ## Use fonts already on the machine or supplied by the user
 
