@@ -98,7 +98,7 @@ project/
 │       ├── BRIEF.md
 │       ├── TREATMENT.md
 │       ├── PROMPTS.md
-│       ├── prompt-pack.json
+│       ├── PROMPTS.json
 │       ├── PROGRESS.md
 │       ├── authors/
 │       ├── recipes/
@@ -149,7 +149,7 @@ referenced in place; its documentary role does not require a duplicate.
 - `PROMPTS.md` is the readable provider-neutral prompt handoff: one prompt per source range, with
   purpose, continuity notes, language and negative guidance. It does not execute a generation
   Provider.
-- `prompt-pack.json` is the machine-readable equivalent validated by
+- `PROMPTS.json` is the machine-readable prompt-pack equivalent validated by
   [`prompt-pack.schema.json`](../../assets/prompt-pack.schema.json). It contains source ranges and
   prompt wording only; credentials, endpoints, provider names, receipts and pricing never belong in
   the pack.

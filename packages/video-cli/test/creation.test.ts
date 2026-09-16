@@ -195,6 +195,63 @@ test("Korean transcription explicitly sends ko", async () => {
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 
+test("local analysis transcription observes only local WhisperX alignment and no hosted or generation call", async () => {
+  const root = await mkdtemp(join(tmpdir(), "hypit-analysis-local-"));
+  const alignment = "@hypit/whisperx@1#whisperx-alignment";
+  const requested: string[] = [];
+  const invoked: string[] = [];
+  const forbidden: string[] = [];
+  const network: string[] = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    network.push(String(input));
+    throw new Error(`unexpected network request ${String(input)}`);
+  };
+  try {
+    await writeFile(join(root, "speech.wav"), wav(32_000));
+    const environment: CreationEnvironment = {
+      cwd: root,
+      openHost: async () => ({
+        profile: join(root, "analysis-only.runtime.json"),
+        host: {
+          providers: async (requests) => requests.map((request) => {
+            const key = `${request.capability.module.name}@${request.capability.module.version}#${request.capability.name}`;
+            requested.push(key);
+            if (key !== alignment) forbidden.push(`provider:${key}`);
+            return {
+              request: request.request,
+              capability: request.capability,
+              status: "resolved" as const,
+              endpoint: "whisperx.local",
+              use: "@hypit/provider-whisperx-local",
+              pricing: { kind: "local" as const },
+            };
+          }),
+          invoke: async (need) => {
+            const key = `${need.capability.module.name}@${need.capability.module.version}#${need.capability.name}`;
+            invoked.push(key);
+            if (key !== alignment) forbidden.push(`invoke:${key}`);
+            const request = need.constraints as unknown as WhisperXAlignmentRequest;
+            return { value: { kind: "inline" as const, value: canonicalize(sealAlignedTranscriptEvidence({
+              passages: interpretWhisperXTranscript({
+                segments: [{ words: [{ word: "안녕하세요", start: 0.1, end: 0.6 }] }],
+              }, request.sampleFrames),
+            })) } };
+          },
+        },
+      }),
+    };
+    await runCreationCli(["transcribe", "speech.wav", "--language", "ko", "--to", "transcript.json"], capture().io, environment);
+    assert.deepEqual(requested, [alignment]);
+    assert.deepEqual(invoked, [alignment]);
+    assert.deepEqual(forbidden, []);
+    assert.deepEqual(network, []);
+  } finally {
+    globalThis.fetch = originalFetch;
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
 test("Chinese transcription explicitly sends zh and retains individual character windows", async () => {
   const root = await mkdtemp(join(tmpdir(), "hypit-transcribe-zh-"));
   try {

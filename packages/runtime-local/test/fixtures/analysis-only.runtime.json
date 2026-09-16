@@ -1,0 +1,12 @@
+{
+  "format": "hypit.runtime-local@1",
+  "dataRoot": ".hypit/runtimes/local",
+  "credentials": {},
+  "endpoints": {
+    "media.local": { "use": "@hypit/provider-media-local" },
+    "whisperx.local": { "use": "@hypit/provider-whisperx-local" }
+  },
+  "bindings": {
+    "@hypit/whisperx@1#whisperx-alignment": "whisperx.local"
+  }
+}

@@ -31,6 +31,9 @@ Minimal local Profile when speech timing is required:
 
 ```json
 {
+  "format": "hypit.runtime-local@1",
+  "dataRoot": ".hypit/runtimes/local",
+  "credentials": {},
   "endpoints": {
     "media.local": { "use": "@hypit/provider-media-local" },
     "whisperx.local": { "use": "@hypit/provider-whisperx-local" }
@@ -54,11 +57,12 @@ creative answer, and `PROMPTS.md` is the readable handoff. Prompt entries should
 range, visual purpose, framing/action, continuity, language and negative guidance. Keep them
 provider-neutral: no endpoint, model, credential, receipt or price fields.
 
-`prompt-pack.json` is the machine-readable handoff. Validate it with
+`PROMPTS.json` is the machine-readable handoff (the prompt pack). Validate it with
 [`prompt-pack.schema.json`](../../assets/prompt-pack.schema.json) and the local deterministic
 validator `skills/hypit/scripts/validate_prompt_pack.mjs`. Its top-level `language` is a BCP-47 tag;
 use `ko` for Korean source or target speech. Prompt `sourceRange` values use seconds from the same
-source file named in `source.path`; every `endSeconds` must be greater than `startSeconds`.
+source file named in `source.path`; every range must satisfy
+`0 <= startSeconds < endSeconds <= source.durationSeconds`.
 
 The pack may contain `kind: "image"` or `kind: "video"` prompts because a downstream provider may
 choose either asset type. This does not authorize Hypit to generate either one. A pack can describe
@@ -71,5 +75,12 @@ motion, but it must not contain a generation receipt or a claim that an asset ex
 - [ ] Korean speech, if present, is `ko` and remains eojeol/word-timed.
 - [ ] `ANALYSIS.md` and `TIMELINE.md` distinguish observation, inference and unknowns.
 - [ ] `analysis-prompt` additionally has aligned `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and
-      `prompt-pack.json` with stable source ranges and unique prompt IDs.
+      `PROMPTS.json` with stable source ranges and unique prompt IDs.
 - [ ] The prompt pack passes the schema and deterministic validator.
+
+The two modes are Codex Skill routing modes rather than executable `analysis` commands in the video
+Distribution. The repository therefore cannot count every future agent action end to end. Its
+testable boundary is covered by the runtime Profile fixture, the local media command tests (which
+exercise ffprobe/ffmpeg without a Runtime or network request), and the transcription test (which
+observes one local WhisperX alignment Need and zero hosted/generation requests). The Skill must still
+keep the complete mode action list local and review the resulting files before handoff.

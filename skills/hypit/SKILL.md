@@ -1,6 +1,6 @@
 ---
 name: hypit
-description: Analyze, direct and revise videos with Hypit from references or briefs, including Korean/English/Chinese speech analysis, prompt-pack authoring, SVML/SVS/SVRun production and optional Runtime setup.
+description: Analyze, direct and revise videos with Hypit from references or briefs, including Korean/English/Chinese/Spanish speech analysis, prompt-pack authoring, SVML/SVS/SVRun production and optional Runtime setup.
 ---
 
 # Hypit
@@ -30,7 +30,7 @@ prompt work are first-class local deliverables; they do not implicitly become a 
 - **`analysis` (default for “analyze/review/deconstruct this video”):** inspect the supplied media,
   transcribe when speech is present, and write evidence-backed `ANALYSIS.md` and `TIMELINE.md`.
 - **`analysis-prompt` (default for “analyze and create prompts / treatment / brief”):** do all of
-  `analysis`, then write `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and a validated `prompt-pack.json`.
+  `analysis`, then write `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and a validated `PROMPTS.json`.
 - **`production` (only when the user explicitly asks to generate, build, render, export or deliver
   a video):** continue into SVML/SVS/SVRun authoring, chosen generation Providers, Runtime planning,
   Build/Run execution and review.
@@ -136,9 +136,10 @@ change, locate the relevant project and tools, and explain what can proceed now.
 and [executable](references/environment/distribution.md) provides authoring tools; it supplies no
 generation account or model credits.
 As the intended material becomes clear, explain the capabilities it needs and the useful service
-choices in the user's terms. HypiHub is the recommended integrated hosted service; a user's own API key
-connects the service that issued it, through an installed or project-written Provider. Service choice
-and credential setup are distinct. When connecting a service or explaining a missing capability,
+choices in the user's terms. In `production`, HypiHub may be a convenient integrated hosted service;
+a user's own API key connects the service that issued it, through an installed or project-written
+Provider. Service choice and credential setup are distinct. When connecting a service or explaining a
+missing capability,
 read [Models and Providers](references/environment/model-and-provider.md) for the decision, connection
 work and public SDK. Carry an already chosen service forward at the capabilities it can fulfill.
 
@@ -162,8 +163,9 @@ through the user's chosen accounts. [Models and Providers](references/environmen
 explains BYOK and project-owned extensions. In `production`, official local and HypiHub Providers
 are starting implementations; new services can be connected through the same public package
 interfaces. Analysis modes do not connect any generation Provider.
-Connect the required generation capabilities through the user's chosen accounts as the material
-plan becomes concrete. Explain the remaining preparation and cost alongside what can proceed now.
+Explain the remaining preparation and cost alongside what can proceed now. Analysis modes use only
+the local media and WhisperX path described above; do not offer or initialize a hosted service for
+them.
 Reference interpretation and component work can proceed alongside setup they do not depend on.
 
 ## Understand and adapt
@@ -279,7 +281,7 @@ practical, revisit that choice and carry the improvement into the work and its n
 For `analysis`, completion means the supplied media has been inspected, speech evidence is preserved
 with its confidence/unknowns, and `ANALYSIS.md` plus `TIMELINE.md` are complete. For
 `analysis-prompt`, completion additionally means `BRIEF.md`, `TREATMENT.md`, `PROMPTS.md` and
-`prompt-pack.json` agree on source ranges, aspect ratio, language and prompt IDs. These modes do not
+`PROMPTS.json` agree on source ranges, aspect ratio, language and prompt IDs. These modes do not
 produce or export a video.
 
 ## Where the current question is answered

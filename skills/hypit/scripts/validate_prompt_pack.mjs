@@ -5,12 +5,12 @@ import { isAbsolute } from "node:path";
 
 const [filename] = process.argv.slice(2);
 if (filename === undefined) {
-  console.error("Usage: node skills/hypit/scripts/validate_prompt_pack.mjs <prompt-pack.json>");
+  console.error("Usage: node skills/hypit/scripts/validate_prompt_pack.mjs <PROMPTS.json>");
   process.exit(2);
 }
 
 const fail = (message) => {
-  throw new Error(`prompt-pack.json: ${message}`);
+  throw new Error(`PROMPTS.json: ${message}`);
 };
 const object = (value, label) => {
   if (value === null || typeof value !== "object" || Array.isArray(value)) fail(`${label} must be an object`);
@@ -69,6 +69,12 @@ try {
     nonNegative(range.startSeconds, `prompts[${index}].sourceRange.startSeconds`);
     positive(range.endSeconds, `prompts[${index}].sourceRange.endSeconds`);
     if (range.endSeconds <= range.startSeconds) fail(`prompts[${index}].sourceRange must have end > start`);
+    if (range.startSeconds >= source.durationSeconds) {
+      fail(`prompts[${index}].sourceRange.startSeconds must be < source.durationSeconds (${source.durationSeconds})`);
+    }
+    if (range.endSeconds > source.durationSeconds) {
+      fail(`prompts[${index}].sourceRange.endSeconds must be <= source.durationSeconds (${source.durationSeconds})`);
+    }
     nonEmpty(prompt.purpose, `prompts[${index}].purpose`);
     nonEmpty(prompt.prompt, `prompts[${index}].prompt`);
     if (prompt.negativePrompt !== undefined) nonEmpty(prompt.negativePrompt, `prompts[${index}].negativePrompt`);

@@ -1,4 +1,4 @@
 interface:
   display_name: "Hypit"
-  short_description: "Analyze videos and create prompts, or produce an explicit video brief"
-  default_prompt: "Use $hypit to analyze my supplied video locally and create evidence-backed prompts; only generate or render when I explicitly ask for production."
+  short_description: "Analyze videos, create prompts, or produce on explicit request"
+  default_prompt: "Use $hypit to analyze my supplied video locally and create evidence-backed prompts; support Korean, English, Chinese and Spanish speech; only generate or render when I explicitly ask for production."

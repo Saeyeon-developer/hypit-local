@@ -98,6 +98,9 @@ local WhisperX alignment Endpoint, then bind alignment explicitly:
 
 ```json
 {
+  "format": "hypit.runtime-local@1",
+  "dataRoot": ".hypit/runtimes/local",
+  "credentials": {},
   "endpoints": {
     "media.local": { "use": "@hypit/provider-media-local" },
     "whisperx.local": { "use": "@hypit/provider-whisperx-local" }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -89,6 +89,35 @@ function profile(config: {
     ...(config.bindings === undefined ? {} : { bindings: config.bindings }),
   };
 }
+
+test("the analysis-only local Profile fixture is parseable and excludes hosted or production Endpoints", async () => {
+  const value = JSON.parse(await readFile(new URL("./fixtures/analysis-only.runtime.json", import.meta.url), "utf8"));
+  const parsed = parseLocalRuntimeProfile(value);
+  assert.equal(parsed.format, "hypit.runtime-local@1");
+  assert.equal(parsed.dataRoot, ".hypit/runtimes/local");
+  assert.deepEqual(parsed.credentials, []);
+  assert.deepEqual(parsed.endpoints.map(({ instance, use }) => ({ instance, use })), [
+    { instance: "media.local", use: "@hypit/provider-media-local" },
+    { instance: "whisperx.local", use: "@hypit/provider-whisperx-local" },
+  ]);
+  assert.deepEqual(parsed.bindings, {
+    "@hypit/whisperx@1#whisperx-alignment": "whisperx.local",
+  });
+});
+
+test("analysis-only Profile documentation repeats the parseable fixture shape", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/analysis-only.runtime.json", import.meta.url), "utf8"));
+  const expected = parseLocalRuntimeProfile(fixture);
+  for (const document of [
+    new URL("../../../skills/hypit/references/creation/analysis-and-prompts.md", import.meta.url),
+    new URL("../../../skills/hypit/references/environment/profile.md", import.meta.url),
+  ]) {
+    const text = await readFile(document, "utf8");
+    const block = text.match(/(?:Minimal local Profile when speech timing is required|### Analysis-only local Profile)[\s\S]*?```json\r?\n([\s\S]*?)```/u)?.[1];
+    assert.equal(typeof block, "string", `${document.pathname} has no analysis-only JSON example`);
+    assert.deepEqual(parseLocalRuntimeProfile(JSON.parse(block!)), expected, document.pathname);
+  }
+});
 
 function providerQuery(
   request: string,

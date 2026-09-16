@@ -127,6 +127,28 @@ test("media evidence keeps source times and sub-second visual changes", { skip: 
   }
 });
 
+test("local analysis media evidence uses ffprobe/ffmpeg without a network request", { skip: !ffmpeg && "ffmpeg is not installed" }, async () => {
+  const work = await mkdtemp(join(tmpdir(), "hypit-analysis-media-"));
+  const network: string[] = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    network.push(String(input));
+    throw new Error(`unexpected network request ${String(input)}`);
+  };
+  try {
+    const source = await sample(work);
+    await runMediaCli(["media", "probe", source], io().io, work);
+    await runMediaCli(["media", "frames", source, "--at", "0.2", "--to", "frames"], io().io, work);
+    await runMediaCli(["media", "tile", source, "--at", "0.2,1.1", "--to", "grid.jpg"], io().io, work);
+    await runMediaCli(["media", "cut", source, "--start", "0", "--end", "0.5", "--to", "cut.mp4"], io().io, work);
+    await runMediaCli(["media", "boundaries", source], io().io, work);
+    assert.deepEqual(network, []);
+  } finally {
+    globalThis.fetch = originalFetch;
+    await rm(work, { recursive: true, force: true });
+  }
+});
+
 test("fetch refuses anything but an http link and an explicit video destination", async () => {
   await assert.rejects(runMediaCli(["media", "fetch", "./local.mp4", "--to", "x.mp4"], io().io), /http or https link/);
   await assert.rejects(runMediaCli(["media", "fetch", "https://example.com/v", "--to", "x.txt"], io().io, tmpdir()), /must end in/);

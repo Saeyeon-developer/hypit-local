@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://hypit.ai/schemas/prompt-pack.schema.json",
+  "$comment": "Cross-field sourceRange bounds (endSeconds > startSeconds and endSeconds <= source.durationSeconds) are enforced by validate_prompt_pack.mjs.",
   "title": "Hypit provider-neutral prompt pack",
   "description": "Analysis-prompt handoff only. This format contains no provider, model, credential, receipt or pricing data.",
   "type": "object",
