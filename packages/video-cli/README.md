@@ -11,15 +11,38 @@ reusable Source directly, for example
 `<import as="ugc" source="@hypit/gpt-image-kits/phone-ugc-v1"/>`; resolving that Source does not
 activate package code.
 
-From any project:
+`hypit version` reports the Distribution version, physical root and launcher independently of a
+project or Runtime. `hypit version --check` also reads the package's `latest` tag at
+`https://registry.npmjs.org/`; `--registry <url>` explicitly selects another registry. `--json`
+returns `hypit.cli-version@1`. A failed check retains local facts, leaves the remote version unknown
+and exits nonzero. A different version is not automatically newer: the launcher may be a newer
+checkout or the mirror may lag. The command links release notes and never installs or updates.
+Skill installers own their separate installed copies; this command does not scan Agent directories.
+`hypit --version` remains a local version-only query.
+
+Commands below serve independent authoring decisions. Start with the current project's material;
+local inspection and estimation need no generation account:
 
 ```bash
 cd path/to/project
-hypit runtime init
-hypit auth login hypihub.default
-hypit doctor
-hypit runtime up
 hypit check main.svml
+hypit measure main.svml --segment hook --language en
+```
+
+When the work needs execution, the project selects a Runtime Profile. `hypit runtime init` creates
+an editable starter; its Endpoint entries describe available routes, not choices made by the user.
+Keep an existing chosen service, or configure the chosen local or hosted Provider and its capability
+bindings. HypiHub is the recommended integrated hosted route in the official Distribution; other
+services use project Provider packages. If the user chooses HypiHub,
+`hypit auth login hypihub.default` connects that account.
+`hypit doctor --endpoint <name>` checks a selected Endpoint;
+`hypit runtime up --endpoint <name>` prepares that Endpoint and starts the Worker. Repeat the flag
+for several chosen Endpoints; omitting it prepares the whole Profile. `hypit programs up --endpoint
+<name>` prepares a local helper independently of the Worker.
+
+With the selected execution environment:
+
+```bash
 hypit plan build.svrun
 hypit build build.svrun --follow
 hypit status <build-id> --watch
@@ -29,7 +52,6 @@ hypit history <source-output-name> [--source ./main.svml]
 hypit inspect <build-id> [--output <source-output-name>]
 hypit get <build-id> --output final.video --to ./final.mp4
 hypit cancel <build-id>
-hypit doctor
 ```
 
 `transcribe` runs one immediate request through the selected Runtime Profile, with no Build,
@@ -64,6 +86,11 @@ comes back: pictures, clips and accepted voice references (`@hypit/mimo-speech`)
 that produced them, so they are declared in the Source and go through `plan` and `build`. To hear a
 voice or learn a passage's real length before authoring the rest, build a Run whose target is that
 speech output and reuse it as a Candidate.
+
+Provider selection is checked before `transcribe` invokes the service. Multiple matching Endpoints
+can remain in the Profile: `bindings` chooses one for the capability. An unsupported request reports
+the selected binding and Provider-owned rejection reasons so the author can adjust the request or
+choose a compatible Endpoint. It does not imply that an account needs payment or login.
 
 Two more families are local, stateless and spend nothing. `hypit media` exposes the source at chosen
 times and scales, and `hypit vocabulary`
